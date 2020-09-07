@@ -1,0 +1,51 @@
+#!/usr/bin/env python3
+
+import time
+import os
+import sys
+
+create_time = time.strftime('%Y-%m-%d_%H-%M-%S')
+print('This "create" script produces editable and timestamped files')
+print('from templates you set up.  Usage:')
+print('create < watchlist | journal | html | thesis >\n')
+
+HOME = os.path.expanduser('~')
+try:
+	product = sys.argv[1]
+except:
+	print('Cannot determine output file type.\n\n')
+	quit()
+
+def type(product):
+	gumbo = ['-WATCHLIST.txt', '-JOURNAL.txt', '-WEBPAGE.html', '-TRADETHESIS.txt']
+	switcher = {
+		'watchlist':gumbo[0],
+		'journal':gumbo[1],
+		'html':gumbo[2],
+		'thesis':gumbo[3]
+		}
+	return switcher.get(product)
+
+# Determine what type of output the user wants
+suffix = type(product)
+
+# Quit if not a valid type of output.
+if suffix == '':
+	quit()
+
+# Define variables for the output
+template_file = HOME + '/python/template' + suffix
+output_txt_file = HOME + '/' + create_time + suffix
+
+# Read the template.
+with open(template_file, 'r') as infile:
+    tempo_data = infile.read()
+
+# Modify the template
+tempo_data = str(tempo_data).replace('YYYY-MM-DD', create_time)
+
+# Write out the new file.
+with open(output_txt_file, 'w') as text_file:
+    text_file.write(tempo_data)
+os.system('sensible-editor ' + output_txt_file)
+

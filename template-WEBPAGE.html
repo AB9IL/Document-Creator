@@ -1,0 +1,23 @@
+<?php 
+
+//REQUIRE FUNCTIONS
+require_once 'functions.php';
+
+$title="Your-Tab-Title | Website-name";
+$description="Describe the page.";
+$showads="true or false";
+$pagetitle="Title of Page";
+$tags="Tag1, Tag2, Tag3";
+$content='
+
+
+<p>Hello world.  Put </p>your html code here.</p>
+<p>This template assumes the content is handled by PHP for formatting a
+series of variables for the page components.  Edit it as necessary for
+your site and how content is managed.
+
+';
+pageheader($title,$description,$showads,$summary,$pagetitle,$content);
+pagefooter($tags);
+
+?>
