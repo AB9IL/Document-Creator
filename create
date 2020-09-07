@@ -34,6 +34,7 @@ if suffix == '':
 	quit()
 
 # Define variables for the output
+# Change the paths as needed for your system.
 template_file = HOME + '/python/template' + suffix
 output_txt_file = HOME + '/' + create_time + suffix
 
