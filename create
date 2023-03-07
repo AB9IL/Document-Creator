@@ -4,49 +4,65 @@ import time
 import os
 import sys
 
+create_day = time.strftime('%Y-%m-%d')
 create_time = time.strftime('%Y-%m-%d_%H-%M-%S')
 print('This "create" script produces editable and timestamped files')
-print('from templates you set up.  Usage:')
-print('create < watchlist | journal | html | thesis >\n')
+print('from templates you set up.\n\nUsage:')
+print('create < watchlist | journal | html | thesis | ideas >\n')
 
 HOME = os.path.expanduser('~')
 try:
-	product = sys.argv[1]
-except:
-	print('Cannot determine output file type.\n\n')
-	quit()
+    product = sys.argv[1]
+except Exception:
+    print('Cannot determine output file type.\n\n')
+    quit()
+
 
 def type(product):
-	gumbo = ['-WATCHLIST.txt', '-JOURNAL.txt', '-WEBPAGE.html', '-TRADETHESIS.txt']
-	switcher = {
-		'watchlist':gumbo[0],
-		'journal':gumbo[1],
-		'html':gumbo[2],
-		'thesis':gumbo[3]
-		}
-	return switcher.get(product)
+    gumbo = ['-WATCHLIST.md',
+             '-JOURNAL.md',
+             '-WEBPAGE.html',
+             '-TRADETHESIS.md',
+             '-IDEAS.md'
+             ]
+    switcher = {
+            'watchlist': gumbo[0],
+            'journal': gumbo[1],
+            'html': gumbo[2],
+            'thesis': gumbo[3],
+            'ideas': gumbo[4]
+            }
+    return switcher.get(product)
+
 
 # Determine what type of output the user wants
 suffix = type(product)
 
 # Quit if not a valid type of output.
 if suffix == '':
-	quit()
+    quit()
 
 # Define variables for the output
-# Change the paths as needed for your system.
 template_file = HOME + '/python/template' + suffix
-output_txt_file = HOME + '/' + create_time + suffix
+output_txt_file = HOME + '/Documents/Vimwiki/' + create_day + suffix
 
-# Read the template.
-with open(template_file, 'r') as infile:
-    tempo_data = infile.read()
+# create the new file if it does not exist
+if not os.path.exists(output_txt_file):
+    # Read the template.
+    with open(template_file, 'r') as infile:
+        tempo_data = infile.read()
+        # Modify the template
+        tempo_data = str(tempo_data).replace('YYYY-MM-DD', create_day)
+        # Write out the new file.
+        with open(output_txt_file, 'w') as text_file:
+            text_file.write(tempo_data)
 
-# Modify the template
-tempo_data = str(tempo_data).replace('YYYY-MM-DD', create_time)
+# if the new file already exists
+if os.path.exists(output_txt_file):
+    if product == "html":
+        command = "vim -c \"norm 14j\" -c startinsert " + output_txt_file
+    else:
+        command = "vim -c \"norm Go\" -c \"norm Go## \"" + create_time + \
+            " -c \"norm G2o\" -c \"norm zz\" -c startinsert " + output_txt_file
 
-# Write out the new file.
-with open(output_txt_file, 'w') as text_file:
-    text_file.write(tempo_data)
-os.system('sensible-editor ' + output_txt_file)
-
+os.system(command)
